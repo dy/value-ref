@@ -1,0 +1,31 @@
+{
+  "name": "vref",
+  "version": "0.0.0",
+  "description": "Observable value reference",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spectjs/vref.git"
+  },
+  "keywords": [
+    "value-ref",
+    "vue",
+    "vue/ref",
+    "reactivity",
+    "reactive",
+    "observable",
+    "value",
+    "reference",
+    "channel",
+    "observ"
+  ],
+  "author": "Dmitry Iv",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spectjs/vref/issues"
+  },
+  "homepage": "https://github.com/spectjs/vref#readme"
+}
