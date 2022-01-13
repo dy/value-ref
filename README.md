@@ -1,6 +1,6 @@
 # vref
 
-> Observable <em>v<em>alue <em>ref</em>erence.
+> Observable <em>v</em>alue <em>ref</em>erence.
 
 #### `const ref = v( init? )`
 
