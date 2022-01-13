@@ -2,7 +2,8 @@
   "name": "vref",
   "version": "1.0.0",
   "description": "Observable value reference",
-  "main": "index.js",
+  "main": "vref.js",
+  "module": "vref.js",
   "type": "module",
   "scripts": {
     "test": "node test",
