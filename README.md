@@ -2,7 +2,7 @@
 
 > Observable value reference.
 
-### _`const ref = v( init? )`_
+#### `const ref = v( init? )`
 
 Creates reactive mutable _`ref`_ object with a single `.value` property holding internal value.
 Identical to [vue3 ref](https://v3.vuejs.org/api/refs-api.html#ref) with _Observable_ and _AsyncIterable_ interface.
