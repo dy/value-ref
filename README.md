@@ -1,6 +1,6 @@
 # vref
 
-| Observable value reference.
+> Observable value reference.
 
 _`let ref = v( init? )`_
 
