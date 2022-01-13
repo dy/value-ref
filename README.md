@@ -8,7 +8,7 @@ Creates reactive mutable _`ref`_ object with a single `.value` property holding 
 Identical to [vue3 ref](https://v3.vuejs.org/api/refs-api.html#ref) with _Observable_ and _AsyncIterable_ interface.
 
 ```js
-import v from 'vref.js'
+import v from './vref.js'
 
 let count = v(0)
 count.value // 0
