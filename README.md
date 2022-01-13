@@ -1,6 +1,6 @@
 # vref [![test](https://github.com/spectjs/vref/actions/workflows/node.js.yml/badge.svg)](https://github.com/spectjs/vref/actions/workflows/node.js.yml) [![npm version](https://img.shields.io/npm/v/vref)](http://npmjs.org/vref)
 
-> Observable <em>v</em>alue <em>ref</em>erence.
+> Value REFerence with reactivity.
 
 #### `const ref = v( init? )`
 
