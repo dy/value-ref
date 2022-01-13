@@ -23,7 +23,8 @@
     "value",
     "reference",
     "channel",
-    "observ"
+    "observ",
+    "mutant"
   ],
   "author": "Dmitry Iv",
   "license": "ISC",
