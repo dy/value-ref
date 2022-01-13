@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node test"
+    "test": "node test",
+    "build": "terser vref.js -o vref.min.js --module -c passes=3 -m"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
   },
   "homepage": "https://github.com/spectjs/vref#readme",
   "devDependencies": {
+    "terser": "^5.10.0",
     "tst": "^7.0.0",
     "wait-please": "^3.1.0"
   }
