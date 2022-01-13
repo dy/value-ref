@@ -56,10 +56,11 @@ class Ref {
     unsub()
   }
 
-  [Symbol.dispose]() {
+  dispose() {
     this[0] = null
     const unsubs = this.#observers.map(sub => ((typeof sub[_teardown] === 'function') && sub[_teardown](), sub.unsubscribe))
     this.#observers.length = 0
     unsubs.map(unsub => unsub())
   }
+  [Symbol.dispose]() { return this.dispose() }
 }
