@@ -1,6 +1,6 @@
 {
   "name": "vref",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Observable value reference",
   "main": "vref.js",
   "module": "vref.js",
