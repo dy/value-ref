@@ -4,9 +4,8 @@
 
 #### `const ref = v( init? )`
 
-Creates reactive mutable _`ref`_ object with a single `.value` property holding internal value.
+Creates reactive mutable _`ref`_ object with a single `.value` property holding internal value. Ex `spect/v.js`. <br/>
 Identical to [vue3 ref](https://v3.vuejs.org/api/refs-api.html#ref) with _Observable_ and _AsyncIterable_ interface.
-Ex `spect/v.js`.
 
 ```js
 import v from 'vref.js'
