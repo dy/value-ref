@@ -1,11 +1,11 @@
 # vref
 
-> Observable value reference.
+> Observable <em>v<em>alue <em>ref</em>erence.
 
 #### `const ref = v( init? )`
 
 Creates reactive mutable _`ref`_ object with a single `.value` property holding internal value. Ex `spect/v.js`. <br/>
-Identical to [vue3 ref](https://v3.vuejs.org/api/refs-api.html#ref) with _Observable_ and _AsyncIterable_ interface.
+Similar to [vue3 ref](https://v3.vuejs.org/api/refs-api.html#ref) with _Observable_ and _AsyncIterable_ interface.
 
 ```js
 import v from './vref.js'
