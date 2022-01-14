@@ -41,7 +41,8 @@ sum.dispose() // destroy observations
 
 ## Related
 
-* [templize](https://github.com/spectjs/templize) − templates with reactive support.
+* [templize](https://github.com/spectjs/templize) − template parts with reactive fields support.
+* [hyperf](https://github.com/spectjs/hyperf) − dom fragments builder with reactive fields support.
 * [sube](https://github.com/spectjs/sube) − subscribe to any reactive source.
 * [subscribable-things](https://github.com/chrisguttandin/subscribable-things) − collection of observables for different browser APIs - perfect match with spect.
 
