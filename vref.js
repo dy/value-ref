@@ -46,7 +46,7 @@ class Ref {
 
   error(e) {this.#observers.map(sub => sub.error && sub.error(e))}
 
-  [Symbol.observable](){return this}
+  [Symbol.observable||=Symbol.for('observable')](){return this}
 
   async *[Symbol.asyncIterator]() {
     let resolve, buf = [], p = new Promise(r => resolve = r),
