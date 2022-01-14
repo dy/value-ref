@@ -1,3 +1,4 @@
+// FIXME: can that be made a weakref?
 export default init => new Ref(init)
 
 const _teardown = Symbol()
