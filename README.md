@@ -1,4 +1,4 @@
-# vref [![test](https://github.com/spectjs/vref/actions/workflows/node.js.yml/badge.svg)](https://github.com/spectjs/vref/actions/workflows/node.js.yml) [![npm version](https://img.shields.io/npm/v/vref)](http://npmjs.org/vref)
+# value-ref [![test](https://github.com/spectjs/value-ref/actions/workflows/node.js.yml/badge.svg)](https://github.com/spectjs/value-ref/actions/workflows/node.js.yml) [![npm version](https://img.shields.io/npm/v/value-ref)](http://npmjs.org/value-ref)
 
 > <em>V</em>alue <em>ref</em>erence with reactivity.
 
@@ -8,7 +8,7 @@ Creates reactive mutable _`ref`_ object with a single `.value` property holding 
 Akin to [vue3 ref](https://v3.vuejs.org/api/refs-api.html#ref) with _Observable_ and _AsyncIterable_ interface.
 
 ```js
-import v from './vref.js'
+import v from './value-ref.js'
 
 let count = v(0)
 count.value // 0
