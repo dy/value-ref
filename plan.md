@@ -1,6 +1,8 @@
 # plan
 
-* [ ] name
+* [ ] make use of weakref?
+
+* [x] name: value-ref
   * vref
     + value ref
     + vue ref

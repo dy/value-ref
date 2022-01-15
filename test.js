@@ -1,6 +1,6 @@
 import t, {is, throws} from './node_modules/tst/tst.js'
 import { tick, frame, time } from './node_modules/wait-please/index.js'
-import v from './vref.js'
+import v from './value-ref.js'
 
 // value
 t('v: readme', async t => {
