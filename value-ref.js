@@ -63,5 +63,5 @@ class Ref {
     this.#observers.length = 0
     unsubs.map(unsub => unsub())
   }
-  [Symbol.dispose]() { return this.dispose() }
+  [Symbol.dispose||=Symbol('dispose')]() { return this.dispose() }
 }
