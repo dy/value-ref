@@ -1,6 +1,7 @@
 # plan
 
-* [ ] make use of weakref?
+* [x] make use of weakref?
+  * [ ] find out a way to test that
 
 * [x] name: value-ref
   * vref
