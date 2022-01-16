@@ -1,7 +1,7 @@
 // FIXME: can that be made a weakref?
 export default init => new Ref(init)
 
-const _teardown = Symbol()
+const NEXT=0, ERROR=1, COMPLETE=2, UNSUB=3, TEARDOWN=4
 
 class Ref {
   #observers=[]
@@ -12,8 +12,8 @@ class Ref {
   set value(val) {
     this[0] = val
     for (let sub of this.#observers) {
-      if (typeof sub[_teardown] === 'function') sub[_teardown]()
-      if (sub.next) (sub[_teardown] = sub.next(val))
+      sub[TEARDOWN]?.call?.()
+      sub[TEARDOWN] = sub[NEXT]?.(val)
     }
   }
 
@@ -28,13 +28,14 @@ class Ref {
     complete = next?.complete || complete
 
     const unsubscribe = () => (
-      this.#observers.length && this.#observers.splice(this.#observers.indexOf(subscription) >>> 0, 1),
-      complete?.()
-    ),
-    subscription = { next, error, complete, unsubscribe }
+        this.#observers.length && this.#observers.splice(this.#observers.indexOf(subscription) >>> 0, 1),
+        complete?.()
+      ),
+      subscription = [ next, error, complete, unsubscribe ]
+
     this.#observers.push(subscription)
 
-    if ( this[0] !== undefined ) subscription[_teardown] = next(this[0])
+    if ( this[0] !== undefined ) subscription[TEARDOWN] = next(this[0])
 
     return unsubscribe.unsubscribe = unsubscribe
   }
@@ -45,7 +46,7 @@ class Ref {
     return ref
   }
 
-  error(e) {this.#observers.map(sub => sub.error && sub.error(e))}
+  error(e) {this.#observers.map(sub => sub[ERROR]?.(e))}
 
   [Symbol.observable||=Symbol.for('observable')](){return this}
 
@@ -59,7 +60,7 @@ class Ref {
 
   dispose() {
     this[0] = null
-    const unsubs = this.#observers.map(sub => ((typeof sub[_teardown] === 'function') && sub[_teardown](), sub.unsubscribe))
+    const unsubs = this.#observers.map(sub => (sub[TEARDOWN]?.call?.(), sub[UNSUB]))
     this.#observers.length = 0
     unsubs.map(unsub => unsub())
   }
