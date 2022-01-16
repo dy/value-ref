@@ -13,7 +13,8 @@ class Ref {
     this[0] = val
     for (let sub of this.#observers) {
       sub[TEARDOWN]?.call?.()
-      sub[TEARDOWN] = sub[NEXT]?.(val)
+      !(sub[NEXT]||sub[ERROR]||sub[COMPLETE]).deref() ? sub[UNSUB]() : // unsubscribe is ref is lost
+        sub[TEARDOWN] = sub[NEXT].deref()?.(val)
     }
   }
 
@@ -27,15 +28,16 @@ class Ref {
     error = next?.error || error
     complete = next?.complete || complete
 
-    const unsubscribe = () => (
-        this.#observers.length && this.#observers.splice(this.#observers.indexOf(subscription) >>> 0, 1),
-        complete?.()
-      ),
-      subscription = [ next, error, complete, unsubscribe ]
+    const unsubscribe = () => this.#observers.length && this.#observers.splice(this.#observers.indexOf(subscription) >>> 0, 1),
+      subscription = [
+        next && new WeakRef(next), // weakrefs automatically unsubscribe targets
+        error && new WeakRef(error),
+        complete && new WeakRef(complete),
+        unsubscribe,
+        this[0] !== undefined ? next(this[0]) : null // teardown
+      ]
 
     this.#observers.push(subscription)
-
-    if ( this[0] !== undefined ) subscription[TEARDOWN] = next(this[0])
 
     return unsubscribe.unsubscribe = unsubscribe
   }
@@ -46,7 +48,7 @@ class Ref {
     return ref
   }
 
-  error(e) {this.#observers.map(sub => sub[ERROR]?.(e))}
+  error(e) {this.#observers.map(sub => sub[ERROR]?.deref()?.(e))}
 
   [Symbol.observable||=Symbol.for('observable')](){return this}
 
@@ -60,7 +62,7 @@ class Ref {
 
   dispose() {
     this[0] = null
-    const unsubs = this.#observers.map(sub => (sub[TEARDOWN]?.call?.(), sub[UNSUB]))
+    const unsubs = this.#observers.map(sub => (sub[TEARDOWN]?.call?.(), sub[COMPLETE]?.deref()?.(), sub[UNSUB]))
     this.#observers.length = 0
     unsubs.map(unsub => unsub())
   }
