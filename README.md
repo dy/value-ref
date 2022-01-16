@@ -36,8 +36,10 @@ double.subscribe(v => sum.value = count.value + v)
 // async iterable
 for await (const value of sum) console.log(value)
 
-sum.dispose() // destroy observations
+sum.dispose() // dispose value, unsubscribe
 ```
+
+Internaly uses _WeakRef_ to track list of observers, so it should be safe to ignore unsubscribe.
 
 ## Related
 
