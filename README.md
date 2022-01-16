@@ -13,7 +13,7 @@ import v from './value-ref.js'
 let count = v(0)
 count.value // 0
 
-count.subscribe(value => {
+const unsubscribe = count.subscribe(value => {
   console.log(value)
   return () => console.log('teardown', value)
 })
@@ -22,6 +22,7 @@ count.value = 1
 count.value = 2
 // > "teardown" 1
 // > 2
+unsubscribe()
 
 let double = count.map(value => value * 2) // create mapped ref
 double.value // 4
@@ -36,7 +37,7 @@ double.subscribe(v => sum.value = count.value + v)
 // async iterable
 for await (const value of sum) console.log(value)
 
-sum.dispose() // dispose value, unsubscribe
+sum.dispose() // dispose value, unsubscribe all
 ```
 
 Internaly uses _WeakRef_ to track list of observers, so it should be safe to ignore unsubscribe.
