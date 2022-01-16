@@ -23,13 +23,13 @@ class Ref {
 
   // FIXME: replace with 0b?
   subscribe(next, error, complete) {
-    next = next && next.next || next
-    error = next && next.error || error
-    complete = next && next.complete || complete
+    next = next?.next || next
+    error = next?.error || error
+    complete = next?.complete || complete
 
     const unsubscribe = () => (
       this.#observers.length && this.#observers.splice(this.#observers.indexOf(subscription) >>> 0, 1),
-      complete && complete()
+      complete?.()
     ),
     subscription = { next, error, complete, unsubscribe }
     this.#observers.push(subscription)
