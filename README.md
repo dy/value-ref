@@ -36,9 +36,12 @@ double.subscribe(v => sum.value = count.value + v)
 
 // async iterable
 for await (const value of sum) console.log(value)
+
+// dispose reference (automatically unsubscribed on garbage collection)
+count = null, double = null
 ```
 
-Internaly uses _WeakRef_ to track list of observers, so it's unnecessary to dispose.
+Note: manual dispose is available as `ref[Symbol.dispose]`, but unnecessary - _FinalizationRegistry_ unsubscribes automatically if reference is lost.
 
 ## Related
 
