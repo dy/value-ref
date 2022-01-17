@@ -37,7 +37,7 @@ t('v: readme', async t => {
   is(v3.value, v1) // v5
 
   // dispose
-  ;[v3, v2, v1].map(v => v[Symbol.dispose]())
+  // ;[v3, v2, v1].map(v => v[Symbol.dispose]())
 })
 t('v: core API', async t => {
   let s = v(0)

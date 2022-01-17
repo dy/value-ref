@@ -1,4 +1,3 @@
-// FIXME: can that be made a weakref?
 export default init => new Ref(init)
 
 const NEXT=0, ERROR=1, COMPLETE=2, UNSUB=3, TEARDOWN=4
@@ -11,18 +10,16 @@ class Ref {
   get value() { return this[0] }
   set value(val) {
     this[0] = val
-    for (let sub of this.#observers) {
-      sub[TEARDOWN]?.call?.()
+    for (let sub of this.#observers)
+      sub[TEARDOWN]?.call?.(),
       !(sub[NEXT]||sub[ERROR]||sub[COMPLETE]).deref() ? sub[UNSUB]() : // unsubscribe is ref is lost
         sub[TEARDOWN] = sub[NEXT].deref()?.(val)
-    }
   }
 
   valueOf() {return this.value}
   toString() {return this.value}
   [Symbol.toPrimitive](hint) {return this.value}
 
-  // FIXME: replace with 0b?
   subscribe(next, error, complete) {
     next = next?.next || next
     error = next?.error || error
@@ -59,12 +56,4 @@ class Ref {
     catch {}
     unsub()
   }
-
-  dispose() {
-    this[0] = null
-    const unsubs = this.#observers.map(sub => (sub[TEARDOWN]?.call?.(), sub[COMPLETE]?.deref()?.(), sub[UNSUB]))
-    this.#observers.length = 0
-    unsubs.map(unsub => unsub())
-  }
-  [Symbol.dispose||=Symbol('dispose')]() { return this.dispose() }
 }
