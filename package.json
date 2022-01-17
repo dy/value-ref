@@ -6,7 +6,7 @@
   "module": "value-ref.js",
   "type": "module",
   "scripts": {
-    "test": "node test",
+    "test": "node --expose-gc test",
     "build": "terser value-ref.js -o value-ref.min.js --module -c passes=3 -m"
   },
   "repository": {
@@ -19,6 +19,7 @@
     "vue/ref",
     "reactivity",
     "reactive",
+    "state",
     "observable",
     "value",
     "reference",

@@ -11,9 +11,8 @@ class Ref {
   set value(val) {
     this[0] = val
     for (let sub of this.#observers)
-      sub[TEARDOWN]?.call?.(),
       !(sub[NEXT]||sub[ERROR]||sub[COMPLETE]).deref() ? sub[UNSUB]() : // unsubscribe is ref is lost
-        sub[TEARDOWN] = sub[NEXT].deref()?.(val)
+        (sub[TEARDOWN]?.call?.(), sub[TEARDOWN] = sub[NEXT].deref()?.(val))
   }
 
   valueOf() {return this.value}
@@ -25,7 +24,10 @@ class Ref {
     error = next?.error || error
     complete = next?.complete || complete
 
-    const unsubscribe = () => this.#observers.length && this.#observers.splice(this.#observers.indexOf(subscription) >>> 0, 1),
+    const unsubscribe = () => (
+        subscription[TEARDOWN]?.call?.(),
+        this.#observers.splice(this.#observers.indexOf(subscription) >>> 0, 1)
+      ),
       subscription = [
         next && new WeakRef(next), // weakrefs automatically unsubscribe targets
         error && new WeakRef(error),
@@ -55,5 +57,10 @@ class Ref {
     try { while (1) yield* buf.splice(0), await p }
     catch {}
     unsub()
+  }
+
+  [Symbol.dispose||=Symbol('dispose')]() {
+    delete this[0]
+    this.#observers.map(sub => sub[UNSUB]())
   }
 }

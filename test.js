@@ -37,7 +37,7 @@ t('v: readme', async t => {
   is(v3.value, v1) // v5
 
   // dispose
-  // ;[v3, v2, v1].map(v => v[Symbol.dispose]())
+  ;[v3, v2, v1].map(v => v[Symbol.dispose]())
 })
 t('v: core API', async t => {
   let s = v(0)
@@ -202,7 +202,7 @@ t.skip('v: init from mixed args', t => {
   is(v2(), [1, 2])
 })
 t('v: expose current value by index', t => {
-  // NOTE: we don't support multiple values, but exposing by index is good idea
+  // NOTE: we don't support multiple values, but exposing by index is good idea - for spread?
   let a = v(0,1,2)
   is(a[0], 0)
   // is(a[1], 1)
@@ -231,4 +231,22 @@ t.skip('v: error in init', async t => {
 t.skip('v: error in set', async t => {
   let x = v(1)
   x(x => {throw Error(123)})
+})
+
+t('v: should release subscriptions', async t => {
+  let x = v(1), arr = [], fn = (v)=>(arr.push(v),()=>arr.push('out'))
+  x.subscribe(fn)
+  x.value = 1
+  is(arr, [1,'out',1])
+
+  if (typeof global !== 'undefined' && global.gc) {
+    fn = null
+    await time(50)
+    global.gc()
+    await time(50)
+
+    console.log('new value after gc')
+    x.value = 2
+    is(arr, [1,'out',1,'out'])
+  }
 })
