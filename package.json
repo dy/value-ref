@@ -1,6 +1,6 @@
 {
   "name": "value-ref",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Value reference with reactivity",
   "main": "value-ref.js",
   "module": "value-ref.js",
