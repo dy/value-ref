@@ -1,7 +1,8 @@
 # plan
 
 * [x] make use of weakref?
-  * [ ] find out a way to test that
+  * [x] find out a way to test that
+  * [x] don't collect by event: it's fine for event to hang there as far as source is available - source can generate more events.
 
 * [x] name: value-ref
   * vref

@@ -8,6 +8,10 @@ const unsubscribe = obs => obs?.map?.(sub => sub[UNSUB]()),
 class Ref {
   #observers=[]
 
+  // NOTE: on finalization strategy
+  // we unsubscribe only by losing source, not by losing subscriptions
+  // safe is to let event handlers sit there as far as source is available
+  // it can generate events, dereferencing listeners would be incorrect
   constructor(init){ this[0] = init, registry.register(this, this.#observers) }
 
   get value() { return this[0] }
