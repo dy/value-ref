@@ -233,7 +233,7 @@ t.skip('v: error in set', async t => {
   x(x => {throw Error(123)})
 })
 
-t('v: should release subscriptions', async t => {
+t('v: should release subscriptions if they are collected', async t => {
   let x = v(1), arr = [], fn = (v)=>(arr.push(v),()=>arr.push('out'))
   x.subscribe(fn)
   x.value = 1
@@ -250,3 +250,23 @@ t('v: should release subscriptions', async t => {
     is(arr, [1,'out',1,'out'])
   }
 })
+
+// NOTE: it's also tested by sube
+
+t('v: should release subscriptions if self is collected', async t => {
+  let x = v(1), arr = [], fn = (v)=>(arr.push(v),()=>arr.push('out'))
+  x.subscribe(fn)
+  x.value = 1
+  is(arr, [1,'out',1])
+
+  if (typeof global !== 'undefined' && global.gc) {
+    x = null
+    await time(50)
+    global.gc()
+    await time(50)
+
+    console.log('new value after gc')
+    is(arr, [1,'out',1,'out'])
+  }
+})
+
