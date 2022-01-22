@@ -2,12 +2,13 @@
   "name": "value-ref",
   "version": "1.4.3",
   "description": "Value reference with reactivity",
-  "main": "value-ref.js",
-  "module": "value-ref.js",
+  "main": "./src/value-ref.js",
+  "module": "./src/value-ref.js",
   "type": "module",
   "scripts": {
     "test": "node --expose-gc test",
-    "build": "terser value-ref.js -o value-ref.min.js --module -c passes=3 -m"
+    "build": "rollup ./src/value-ref.js -p @rollup/plugin-node-resolve --file value-ref.js --format esm",
+    "minify": "terser value-ref.js -o value-ref.min.js --module -c passes=3 -m"
   },
   "repository": {
     "type": "git",
