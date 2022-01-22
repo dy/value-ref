@@ -34,7 +34,7 @@ double.value // 4
 count.value = 3
 double.value // 6
 
-// create from multiple refs
+// create computed from multiple refs
 let sum = v.from(count.value, double.value, (count, double) => count + double)
 
 // async iterable
