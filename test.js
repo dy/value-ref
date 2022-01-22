@@ -23,7 +23,7 @@ t('v: readme', async t => {
   unsub()
 
   // from value
-  let v2 = v1.map(v1 => v1 * 2)
+  let v2 = v.from(v1, v1 => v1 * 2)
   log = []
   v2.subscribe(v2 => log.push(v2))
   is(v2.value, 2) // > 2
@@ -160,75 +160,74 @@ t('v: stores arrays with observables', async t => {
   a.value = [b.value]
   is(a.value, [1])
 })
-t.skip('v: stringify', async t => {
-  // TODO: can't fix :()
-  let v1 = v(1), v2 = v({x:1})
+t('v: stringify', async t => {
+  let v1 = v(1), v2 = v({x:1}), v3=v(1,2,3)
   is(JSON.stringify(v1), '1')
   is(JSON.stringify(v2), `{"x":1}`)
+  is(JSON.stringify(v3), '1')
 })
-t.skip('v: multiple values', async t => {
-  // NOTE: we don't support multiple values due to simple nature of ref
-  // create and bind composed values manually
+t('v: multiple values', async t => {
   let x = v()
   let log = []
   x.subscribe((a,b,c) => log.push(a,b,c))
   is(log, [])
-  x(1,2,3)
+  x.set(1,2,3)
   is(log, [1,2,3])
-  is(x(), [1,2,3])
+  is(x, [1,2,3])
 
-  let y = x.map((a,b,c) => log.push(a,b,c))
-  is(log, [1,2,3,1,2,3])
+  let y = v.from(x, (a,b,c) => log.push(a,b,c))
+  is(log, [1,2,3,1,undefined,undefined])
+  // is(log, [1,2,3,1,2,3])
 })
 // Observable methods
 t('v: o.map', async t => {
-  let v1 = v(1), v2 = v1.map(x => x + 1)
+  let v1 = v(1), v2 = v.from(v1, x => x + 1)
   is(v2.value, 2)
   v1.value = 2
   is(v2.value, 3)
 })
-t.skip('v: init from observable', t => {
+t('v: init from observable', t => {
   // NOTE: we don't init from anything. Use strui/from
-  let v1 = v(1), v2 = v(v1)
-  is(v2(), 1)
+  let v1 = v(1), v2 = v.from(v1)
+  is(v2.value, 1)
   v1.value = 2
-  is(v2(), 2)
+  is(v2.value, 2)
 })
-t.skip('v: init from mixed args', t => {
+t('v: init from mixed args', t => {
   // NOTE: we don't init from anything. Use strui/from
-  let v1 = v(1), v2 = v(1, v1)
-  is(v2(), [1, 1])
+  let v1 = v(1), v2 = v.from(1, v1)
+  is(v2, [1, 1])
   v1.value = 2
-  is(v2(), [1, 2])
+  is(v2, [1, 2])
 })
 t('v: expose current value by index', t => {
   // NOTE: we don't support multiple values, but exposing by index is good idea - for spread?
   let a = v(0,1,2)
   is(a[0], 0)
-  // is(a[1], 1)
-  // is(a[2], 2)
-  // a(1,2,3)
+  is(a[1], 1)
+  is(a[2], 2)
+  a.set(1,2,3)
   a.value = 1
   is(a[0], 1)
-  // is(a[1], 2)
-  // is(a[2], 3)
+  is(a[1], 2)
+  is(a[2], 3)
 })
 
 // error
-t.skip('v: error in mapper', async t => {
+t.todo('v: error in mapper', async t => {
   // NOTE: actually mb useful to have blocking error in mapper
   let x = v(1)
   let y = x.map(x => {throw Error('123')})
   t.ok(y.error)
 })
-t.skip('v: error in subscription', async t => {
+t.todo('v: error in subscription', async t => {
   let x = v(1)
   x.subscribe(() => {throw new Error('x')})
 })
-t.skip('v: error in init', async t => {
+t.todo('v: error in init', async t => {
   let x = v(() => {throw Error(123)})
 })
-t.skip('v: error in set', async t => {
+t.todo('v: error in set', async t => {
   let x = v(1)
   x(x => {throw Error(123)})
 })

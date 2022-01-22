@@ -2,10 +2,14 @@
 
 > <em>V</em>alue <em>ref</em>erence with reactivity.
 
-#### `const ref = v( init? )`
+#### `ref = v( init? )`
 
-Creates reactive mutable _`ref`_ object with a single `.value` property holding internal value. Ex `spect/v.js`. <br/>
-Akin to [vue3 ref](https://v3.vuejs.org/api/refs-api.html#ref) with _Observable_ and _AsyncIterable_ interface.
+Creates reactive mutable _`ref`_ object with `.value` property holding internal value. <br/>
+Exposes minimal [_Observable_](https://github.com/tc39/proposal-observable/issues/210) and _AsyncIterable_ interfaces.
+
+#### `ref = v.from(...sources, map?)`
+
+Create reactive _`ref`_ object mapped from passed reactive sources / observables.
 
 ```js
 import v from './value-ref.js'
@@ -13,7 +17,7 @@ import v from './value-ref.js'
 let count = v(0)
 count.value // 0
 
-const unsubscribe = count.subscribe(value => {
+const { unsubscribe } = count.subscribe(value => {
   console.log(value)
   return () => console.log('teardown', value)
 })
@@ -24,21 +28,20 @@ count.value = 2
 // > 2
 unsubscribe()
 
-let double = count.map(value => value * 2) // create mapped ref
+// create mapped ref
+let double = v.from(count, value => value * 2)
 double.value // 4
-
 count.value = 3
 double.value // 6
 
-let sum = v(count.value + double.value)
-count.subscribe(v => sum.value = v + double.value)
-double.subscribe(v => sum.value = count.value + v)
+// create from multiple refs
+let sum = v.from(count.value, double.value, (count, double) => count + double)
 
 // async iterable
 for await (const value of sum) console.log(value)
 
-// dispose reference (automatically unsubscribed on garbage collection)
-count = null, double = null
+// dispose refs (automatically unsubscribes on garbage collection)
+count = double = sum = null
 ```
 
 Note: manual dispose is available as `ref[Symbol.dispose]`, but unnecessary - _FinalizationRegistry_ unsubscribes automatically if reference is lost.

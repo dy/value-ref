@@ -1,28 +1,37 @@
-export default init => new Ref(init)
+import sube, {observable} from 'sube'
+
+const ref = (...init) => new Ref(...init)
 
 const NEXT=0, ERROR=1, COMPLETE=2, UNSUB=3, TEARDOWN=4
 
 const unsubscribe = obs => obs?.map?.(sub => sub[UNSUB]()),
       registry = new FinalizationRegistry(unsubscribe)
 
-class Ref {
+class Ref extends Array {
   #observers=[]
 
   // NOTE: on finalization strategy
   // we unsubscribe only by losing source, not by losing subscriptions
   // safe is to let event handlers sit there as far as source is available
   // it can generate events, dereferencing listeners would be incorrect
-  constructor(init){ this[0] = init, registry.register(this, this.#observers) }
+  constructor(...args) {
+    super()
+    args.length && this.push(...args)
+    registry.register(this, this.#observers)
+  }
 
   get value() { return this[0] }
-  set value(val) {
-    this[0] = val
+  set value(val) { this[0] = val, this.set(...this)}
+
+  set(...values) {
+    Object.assign(this, values)
     for (let sub of this.#observers)
-      (sub[TEARDOWN]?.call?.(), sub[TEARDOWN] = sub[NEXT](val))
+      (sub[TEARDOWN]?.call?.(), sub[TEARDOWN] = sub[NEXT](...this))
   }
 
   valueOf() {return this.value}
   toString() {return this.value}
+  toJSON() {return this.value}
   [Symbol.toPrimitive](hint) {return this.value}
 
   subscribe(next, error, complete) {
@@ -40,7 +49,7 @@ class Ref {
         error,
         complete,
         unsubscribe,
-        this[0] !== undefined ? next(this[0]) : null // teardown
+        this.length ? next(...this) : null // teardown
       ]
 
     observers.push(subscription)
@@ -48,12 +57,7 @@ class Ref {
     return unsubscribe.unsubscribe = unsubscribe
   }
 
-  map(mapper) {
-    const ref = new Ref()
-    this.subscribe(v => ref.value = mapper(v))
-    return ref
-  }
-
+  // FIXME: it never gets called
   error(e) {this.#observers.map(sub => sub[ERROR]?.(e))}
 
   [Symbol.observable||=Symbol.for('observable')](){return this}
@@ -68,7 +72,24 @@ class Ref {
 
   [Symbol.dispose||=Symbol('dispose')]() {
     unsubscribe(this.#observers)
-    delete this[0]
+    this.length = 0
     this.#observers = null
   }
 }
+
+// create new ref from [possibly multiple] sources
+Ref.from = ref.from = (...args) => {
+  let map, values, ref
+  if (args[args.length-1]?.call) map = args.pop()
+
+  values = []
+  args.map(
+    (arg,i) => observable(arg) ?
+      sube(arg, v => (values[i]=v, ref && (map ? ref.value=map(...values) : ref.set(...values)))) :
+      (values[i] = arg)
+  )
+
+  return ref = map ? new Ref(map(...values)) : new Ref(...values)
+}
+
+export default ref
