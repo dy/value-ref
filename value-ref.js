@@ -43,7 +43,7 @@ const NEXT=0, ERROR=1, UNSUB=3, TEARDOWN=4;
 const unsubscribe = obs => obs?.map?.(sub => sub[UNSUB]()),
       registry = new FinalizationRegistry(unsubscribe);
 
-export class Ref {
+class Ref {
   #observers=[]
   #value=[]
 
@@ -52,7 +52,7 @@ export class Ref {
   // safe is to let event handlers sit there as far as source is available
   // it can generate events, dereferencing listeners would be incorrect
   constructor(...args) {
-    this.#value = args
+    this.#value = args;
     registry.register(this, this.#observers);
   }
 
@@ -60,7 +60,7 @@ export class Ref {
   set value(val) { this.#value[0] = val, this.set(...this.#value);}
 
   set(...values) {
-    this.#value = values
+    this.#value = values;
     for (let sub of this.#observers)
       (sub[TEARDOWN]?.call?.(), sub[TEARDOWN] = sub[NEXT](...this.#value));
   }
@@ -70,7 +70,7 @@ export class Ref {
   toJSON() {return this.value}
   [Symbol.toPrimitive](hint) {return this.value}
 
-  *[Symbol.iterator]() { for (let value of this.#value) yield value }
+  *[Symbol.iterator]() { for (let value of this.#value) yield value; }
 
   subscribe(next, error, complete) {
     next = next?.next || next;
@@ -116,7 +116,7 @@ export class Ref {
 }
 
 // create new ref from [possibly multiple] sources
-export const from = Ref.from = ref.from = (...args) => {
+const from = Ref.from = ref.from = (...args) => {
   let map, values, ref;
   if (args[args.length-1]?.call) map = args.pop();
 
@@ -130,4 +130,4 @@ export const from = Ref.from = ref.from = (...args) => {
   return ref = map ? new Ref(map(...values)) : new Ref(...values)
 };
 
-export { ref as default };
+export { Ref, ref as default, from };
