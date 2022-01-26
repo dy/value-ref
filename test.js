@@ -84,12 +84,11 @@ t('v: core API', async t => {
 
   is(log2.slice(-1), [5], 'secondary observer is fine')
 })
-t.skip('v: should not expose technical symbols', async t => {
+t('v: should not expose technical/array symbols', async t => {
   let s = v({x: 1})
   let log = []
-  for(let p in s) {
-    log.push(p)
-  }
+  is(s.map, undefined)
+  for(let p in s) {log.push(p)}
   is(log, [])
 })
 t('spreading', t => {
@@ -173,7 +172,7 @@ t('v: multiple values', async t => {
   is(log, [])
   x.set(1,2,3)
   is(log, [1,2,3])
-  is(x, [1,2,3])
+  is([...x], [1,2,3])
 
   let y = v.from(x, (a,b,c) => log.push(a,b,c))
   is(log, [1,2,3,1,undefined,undefined])
@@ -196,21 +195,21 @@ t('v: init from observable', t => {
 t('v: init from mixed args', t => {
   // NOTE: we don't init from anything. Use strui/from
   let v1 = v(1), v2 = v.from(1, v1)
-  is(v2, [1, 1])
+  is([...v2], [1, 1])
   v1.value = 2
-  is(v2, [1, 2])
+  is([...v2], [1, 2])
 })
 t('v: expose current value by index', t => {
-  // NOTE: we don't support multiple values, but exposing by index is good idea - for spread?
   let a = v(0,1,2)
-  is(a[0], 0)
-  is(a[1], 1)
-  is(a[2], 2)
+  is([...a], [0, 1, 2])
+  // is(a[1], 1)
+  // is(a[2], 2)
   a.set(1,2,3)
   a.value = 1
-  is(a[0], 1)
-  is(a[1], 2)
-  is(a[2], 3)
+  is([...a], [1,2,3])
+  // is(a[0], 1)
+  // is(a[1], 2)
+  // is(a[2], 3)
 })
 
 // error

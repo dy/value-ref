@@ -43,32 +43,34 @@ const NEXT=0, ERROR=1, UNSUB=3, TEARDOWN=4;
 const unsubscribe = obs => obs?.map?.(sub => sub[UNSUB]()),
       registry = new FinalizationRegistry(unsubscribe);
 
-class Ref extends Array {
+export class Ref {
   #observers=[]
+  #value=[]
 
   // NOTE: on finalization strategy
   // we unsubscribe only by losing source, not by losing subscriptions
   // safe is to let event handlers sit there as far as source is available
   // it can generate events, dereferencing listeners would be incorrect
   constructor(...args) {
-    super();
-    args.length && this.push(...args);
+    this.#value = args
     registry.register(this, this.#observers);
   }
 
-  get value() { return this[0] }
-  set value(val) { this[0] = val, this.set(...this);}
+  get value() { return this.#value[0] }
+  set value(val) { this.#value[0] = val, this.set(...this.#value);}
 
   set(...values) {
-    Object.assign(this, values);
+    this.#value = values
     for (let sub of this.#observers)
-      (sub[TEARDOWN]?.call?.(), sub[TEARDOWN] = sub[NEXT](...this));
+      (sub[TEARDOWN]?.call?.(), sub[TEARDOWN] = sub[NEXT](...this.#value));
   }
 
   valueOf() {return this.value}
   toString() {return this.value}
   toJSON() {return this.value}
   [Symbol.toPrimitive](hint) {return this.value}
+
+  *[Symbol.iterator]() { for (let value of this.#value) yield value }
 
   subscribe(next, error, complete) {
     next = next?.next || next;
@@ -85,7 +87,7 @@ class Ref extends Array {
         error,
         complete,
         unsubscribe,
-        this.length ? next(...this) : null // teardown
+        this.#value.length ? next(...this.#value) : null // teardown
       ];
 
     observers.push(subscription);
@@ -108,13 +110,13 @@ class Ref extends Array {
 
   [Symbol.dispose||=Symbol('dispose')]() {
     unsubscribe(this.#observers);
-    this.length = 0;
+    this.#value = null;
     this.#observers = null;
   }
 }
 
 // create new ref from [possibly multiple] sources
-Ref.from = ref.from = (...args) => {
+export const from = Ref.from = ref.from = (...args) => {
   let map, values, ref;
   if (args[args.length-1]?.call) map = args.pop();
 
