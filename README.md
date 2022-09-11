@@ -55,6 +55,6 @@ Note: manual dispose is available as `ref[Symbol.dispose]`, but unnecessary - _F
 
 ## Similar
 
-[observable-value](https://github.com/medikoo/observable-value), [knockout/observable](https://github.com/knockout/tko/issues/22), [mobx/observable](https://mobx.js.org/api.html), [rxjs](https://ghub.io/rxjs), [vue3/ref](https://v3.vuejs.org/api/refs-api.html), [observable](https://ghub.io/observable), [observable proposal](https://github.com/tc39/proposal-observable), [observ](https://ghub.io/observ), [mutant](https://ghub.io/mutant), [iron](https://github.com/ironjs/iron), [icaro](https://ghub.io/icaro), [introspected](https://ghub.io/introspected).
+[observable-value](https://github.com/medikoo/observable-value), [knockout/observable](https://github.com/knockout/tko/issues/22), [mobx/observable](https://mobx.js.org/api.html), [rxjs](https://ghub.io/rxjs), [vue3/ref](https://v3.vuejs.org/api/refs-api.html), [observable](https://ghub.io/observable), [observable proposal](https://github.com/tc39/proposal-observable), [observ](https://ghub.io/observ), [mutant](https://ghub.io/mutant), [iron](https://github.com/ironjs/iron), [icaro](https://ghub.io/icaro), [introspected](https://ghub.io/introspected), [ulive](https://github.com/kethan/ulive), [trkl](https://github.com/jbreckmckye/trkl), [emnudge/trkl](https://github.com/EmNudge/trkl), [usignal](https://github.com/WebReflection/usignal), [preact/signal](https://github.com/preactjs/signals).
 
 <p align="center">ॐ</p>
