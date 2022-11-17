@@ -35,7 +35,7 @@ count.value = 3
 double.value // 6
 
 // create from multiple refs
-let sum = v.from(count.value, double.value, (count, double) => count + double)
+let sum = v.from(count, double, (count, double) => count + double)
 
 // async iterable
 for await (const value of sum) console.log(value)
