@@ -1,6 +1,6 @@
 ### Deprecation notice
 
-[@preact/signals](https://github.com/preactjs/signals) or [usignal](https://github.com/WebReflection/usignal) show best in class performance and is recommended instead.
+[@preact/signals](https://github.com/preactjs/signals) or [usignal](https://github.com/WebReflection/usignal) show best in class performance and are recommended instead.
 
 ---
 
